@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feliz Cumpleaños arroz con leche</title>
+<style>
+    body {
+        background-color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        overflow: hidden; /* Evita el desplazamiento vertical cuando aparecen las imágenes */
+    }
+    button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        position: relative; /* Necesario para posicionar el input correctamente */
+        z-index: 1; /* Asegura que el botón esté sobre las imágenes de lluvia */
+    }
+    #mensaje {
+        color: white;
+        font-size: 24px;
+        font-family: 'Bubblegum Sans', cursive; /* Fuente de estilo Bubble Letters */
+        display: none;
+        text-align: center;
+        margin-top: 20px;
+        z-index: 1; /* Asegura que el mensaje esté sobre las imágenes de lluvia */
+    }
+    .lluvia {
+        position: absolute;
+        pointer-events: none;
+        z-index: 0; /* Asegura que las imágenes de lluvia estén detrás del mensaje y el botón */
+        opacity: 1; /* Ajustado para asegurar que las imágenes sean visibles */
+        animation: caida linear infinite; /* Ajusta la duración y el efecto de la animación de la lluvia */
+    }
+    @keyframes caida {
+        0% {
+            transform: translateY(-100vh) rotateZ(0deg) scale(0); /* Inicia arriba de la pantalla y escala cero */
+            opacity: 1; /* Asegura que las imágenes sean visibles al inicio */
+        }
+        50% {
+            transform: translateY(100vh) rotateZ(360deg) scale(1.5); /* Escala al 150% al medio de la animación */
+            opacity: 1; /* Asegura que las imágenes sean visibles a mitad de la animación */
+        }
+        100% {
+            transform: translateY(200vh) rotateZ(720deg) scale(0); /* Termina debajo de la pantalla y escala cero */
+            opacity: 1; /* Asegura que las imágenes sean visibles al final */
+        }
+    }
+</style>
+</head>
+<body>
+<audio id="musica" src="cancion.mp3"></audio>
+<button id="boton" onclick="mostrarMensaje()">
+    <img id="imagenBoton" src="boton_personalizado.png" alt="Botón Personalizado" style="max-width: 100px; max-height: 100px;">
+</button>
+<div id="mensaje">Feliz Cumpleaños arroz con leche, ¡te quiero!</div>
+
+<script>
+    let imagenesLluvia = [
+        "lluvia1.png",
+        "lluvia2.png",
+        "lluvia3.png",
+        "lluvia4.png"
+    ];
+
+    function mostrarMensaje() {
+        let mensaje = document.getElementById('mensaje');
+        mensaje.style.display = 'block';
+        
+        // Reproducir música al presionar el botón
+        let musica = document.getElementById('musica');
+        musica.play();
+        
+        // Crear las lluvias de imágenes de forma aleatoria y lenta
+        for (let i = 0; i < 100; i++) { // Repetir la lluvia 100 veces (ajustable según desees)
+            setTimeout(() => crearLluvia(), Math.random() * 5000); // Crear cada lluvia con un retraso aleatorio de hasta 5 segundos
+        }
+    }
+    
+    function crearLluvia() {
+        let lluvia = document.createElement('img');
+        lluvia.src = imagenesLluvia[Math.floor(Math.random() * imagenesLluvia.length)];
+        lluvia.classList.add('lluvia');
+        
+        // Posicionar la lluvia aleatoriamente en la pantalla verticalmente y horizontalmente
+        lluvia.style.left = `${Math.random() * window.innerWidth}px`;
+        lluvia.style.top = `${Math.random() * window.innerHeight}px`;
+        
+        // Ajustar la velocidad de caída aleatoriamente
+        lluvia.style.animationDuration = `${Math.random() * 8 + 5}s`; // Duración aleatoria entre 5 y 13 segundos
+        
+        document.body.appendChild(lluvia);
+        
+        setTimeout(() => {
+            lluvia.remove(); // Remover la imagen después de un tiempo para evitar sobrecargar la página
+        }, 15000); // Cambiado a 15 segundos para asegurar que se vea la imagen durante más tiempo
+    }
+    
+    // Cambiar la imagen del botón al seleccionar una nueva imagen desde el archivo local
+    let inputImagen = document.getElementById('inputImagen');
+    inputImagen.addEventListener('change', function(e) {
+        let imagenBoton = document.getElementById('imagenBoton');
+        let file = e.target.files[0];
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            imagenBoton.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+</script>
+
+</body>
+</html>
